@@ -1,0 +1,7 @@
+**/build
+**/*venv*
+**/__pycache__
+**/_build
+./m4
+flash.log
+gdb_toolbox/

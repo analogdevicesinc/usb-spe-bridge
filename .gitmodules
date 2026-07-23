@@ -1,0 +1,13 @@
+[submodule "libs/no-OS"]
+	path = libs/no-OS
+	url = https://github.com/analogdevicesinc/no-OS.git
+	branch = main
+[submodule "libs/tinyuf2"]
+	path = libs/tinyuf2
+	url = https://github.com/adafruit/tinyuf2
+[submodule "libs/uf2"]
+	path = libs/uf2
+	url = https://github.com/microsoft/uf2
+[submodule "libs/tinyUSB"]
+	path = libs/tinyUSB
+	url = https://github.com/hathach/tinyusb

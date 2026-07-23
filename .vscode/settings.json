@@ -1,0 +1,17 @@
+{
+  "C_Cpp.default.forcedInclude": [
+    "${workspaceFolder}/build/project_defines.h"
+  ],
+  "cfs.project.board": "APARD",
+  "cfs.project.target": "MAX32690",
+  "cfs.jlink.device": "MAX32690",
+  "cfs.programFile": "${workspaceFolder}/build/${workspaceFolderBasename}.elf",
+  "cfs.debugPath": "${workspaceFolder}/build/",
+  "cfs.configureWorkspace": "Yes",
+  "cfs.project.firmwarePlatform": "MSDK",
+  "cfs.cmsis.svdFile": "${config:cfs.sdk.path}/SDK/MAX/Libraries/CMSIS/Device/Maxim/MAX32690/Include/max32690.svd",
+
+  "cfs.openocd.target": "target/max32690.cfg",
+  "cfs.openocd.interface": "interface/cmsis-dap.cfg",
+  "cfs.activeContext": "Workspace",
+  }

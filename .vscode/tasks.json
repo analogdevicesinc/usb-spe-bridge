@@ -1,0 +1,81 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"command": "make -f ${workspaceFolder}/config.mk -f Makefile -r -j 8 --output-sync=target --no-print-directory TARGET=${config:cfs.project.target} BOARD=${config:cfs.project.board} MAXIM_PATH=${config:cfs.sdk.path}/SDK/MAX MAKE=make",
+			"options": {
+				"cwd": "${workspaceFolder}/bootloader",
+				"env": {
+					"PATH": "${config:cfs.sdk.path}/Utils/cfsutil/bin;${config:cfs.sdk.path}/Tools/gcc/arm-none-eabi/bin;${config:cfs.sdk.path};${env:PATH}",
+					"MAXIM_PATH": "${config:cfs.sdk.path}/SDK/MAX/"
+				}
+			},
+			"group": "build",
+			"problemMatcher": [],
+			"label": "CFS: Bootloader build"
+		},
+		{
+			"type": "shell",
+			"command": "make -r -j 8 --output-sync=target --no-print-directory TARGET=${config:cfs.project.target} BOARD=${config:cfs.project.board} MAXIM_PATH=${config:cfs.sdk.path}/SDK/MAX MAKE=make clean",
+			"options": {
+				"cwd": "${workspaceFolder}/bootloader",
+				"env": {
+					"PATH": "${config:cfs.sdk.path}/Utils/cfsutil/bin;${config:cfs.sdk.path}/Tools/gcc/arm-none-eabi/bin;${config:cfs.sdk.path};${env:PATH}",
+					"MAXIM_PATH": "${config:cfs.sdk.path}/SDK/MAX/"
+				}
+			},
+			"group": "build",
+			"problemMatcher": [],
+			"label": "CFS: Bootloader Clean"
+		},
+		{
+			"type": "shell",
+			"command": "(echo loadfile build/bootloader.elf && echo q) | \"${command:cfs.jlink.setJlinkPath}/JLink.exe\" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1",
+			"options": {
+				"cwd": "${workspaceFolder}/bootloader",
+				"env": {
+					"PATH": "${config:cfs.sdk.path}/Utils/cfsutil/bin;${config:cfs.sdk.path}/Tools/gcc/arm-none-eabi/bin;${config:cfs.sdk.path};${config:cfs.sdk.path}/Tools/openocd/bin;${env:PATH}",
+					"MAXIM_PATH": "${config:cfs.sdk.path}/SDK/MAX/"
+				}
+			},
+			"windows": {
+				"options": {
+					"shell": {
+						"args": [
+							"/c"
+						],
+						"executable": "${env:windir}\\System32\\cmd.exe"
+					}
+				}
+			},
+			"group": "build",
+			"problemMatcher": [],
+			"label": "CFS: Bootloader flash (JLink)"
+		},
+		{
+			"type": "shell",
+			"command": "arm-none-eabi-gdb --cd=\"${workspaceFolder}/bootloader\" --se=\"build/bootloader.elf\" --symbols=build/bootloader.elf -x=\"${workspaceFolder}/.vscode/flash.gdb\" --ex=\"flash_m4 ${config:cfs.openocd.path} ${config:cfs.openocd.interface} ${config:cfs.openocd.target}\" --batch",
+			"options": {
+				"cwd": "${workspaceFolder}/bootloader",
+				"env": {
+					"PATH": "${config:cfs.sdk.path}/Utils/cfsutil/bin;${config:cfs.sdk.path}/Tools/gcc/arm-none-eabi/bin;${config:cfs.sdk.path};${config:cfs.sdk.path}/Tools/openocd/bin;${env:PATH}",
+					"MAXIM_PATH": "${config:cfs.sdk.path}/SDK/MAX/"
+				}
+			},
+			"windows": {
+				"options": {
+					"shell": {
+						"args": [
+							"/c"
+						],
+						"executable": "${env:windir}\\System32\\cmd.exe"
+					}
+				}
+			},
+			"group": "build",
+			"problemMatcher": [],
+			"label": "CFS: Bootloader flash (OpenOCD)"
+		}
+	]
+}
