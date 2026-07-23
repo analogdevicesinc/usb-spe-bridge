@@ -4,7 +4,7 @@ User's Guide
 The MACPHY USB to T1S bridge is a software driven bridge/media converter
 project, allowing direct network access to a 10Base-T1S network via
 USB.  The 10Base-T1S connectivity is provided by the Analog Devices
-AD3306 MACPHY, and the microcontroller, including USB connectivity is
+AD3306 MACPHY. The microcontroller, including USB connectivity, is
 provided by the Analog Devices MAX32690 MCU. Features of this project
 include:
 
