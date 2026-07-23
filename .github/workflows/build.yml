@@ -84,7 +84,7 @@ jobs:
               # If restore key is matched, directory may exist but show a cache miss,
               # so check first before cloning
               if [ ! -d "msdk" ]; then
-                git clone --depth 1 --branch main --single-branch --revision 8eadee7 https://github.com/analogdevicesinc/msdk.git
+                git clone --depth 1 --revision 8eadee7ca3d85ad8c2a774b8cda2ddc85b8f1b01 https://github.com/analogdevicesinc/msdk.git
               else
                 echo "msdk directory already exists (restored from cache), skipping clone"
               fi
