@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Clone this repository with its submodules:" name="description" />
+
+    <title>Build Guide &#8212; MAX32690 Single Pair Ethernet/USB Bridge  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=d3f78147" />
+    <script async="async" src="_static/app.umd.js?v=26d0298f"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Porting Guide" href="portingguide.html" />
+    <link rel="prev" title="User’s Guide" href="usersguide.html" />
+   
+  
+  
+  
+  <meta name="repository" content="max32690-usb-spe-bridge">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="index.html">
+          <div>MAX32690 Single Pair Ethernet/USB Bridge</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root/>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Build Guide</a><ul>
+<li><a class="reference internal" href="#cloning">Cloning</a></li>
+<li><a class="reference internal" href="#config-mk">Config.mk</a><ul>
+<li><a class="reference internal" href="#platform">PLATFORM</a></li>
+<li><a class="reference internal" href="#app">APP</a></li>
+<li><a class="reference internal" href="#use-bootloader">USE_BOOTLOADER</a></li>
+<li><a class="reference internal" href="#flash-boot-size">FLASH_BOOT_SIZE</a></li>
+<li><a class="reference internal" href="#python">PYTHON</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-the-application-project">Building the Application Project</a><ul>
+<li><a class="reference internal" href="#flashing">Flashing</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#uf2-file-generation">UF2 File Generation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-the-bootloader-project">Building the Bootloader Project</a><ul>
+<li><a class="reference internal" href="#id1">Flashing</a></li>
+<li><a class="reference internal" href="#id2">Debugging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="index.html">
+      MAX32690 Single Pair Ethernet/USB Bridge
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root/>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#hardware-overview">Hardware Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#general-operation">General Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#console-interface-and-configuration">Console Interface and Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#re-programming">Re-Programming</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="portingguide.html">Porting Guide</a></li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb empty"><ol></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="build-guide">
+<h1>Build Guide<a class="headerlink" href="#build-guide" title="Link to this heading"></a></h1>
+<section id="cloning">
+<h2>Cloning<a class="headerlink" href="#cloning" title="Link to this heading"></a></h2>
+<p>Clone this repository with its submodules:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/adi-innersource/max32690-usb-spe-bridge bridge
+cd bridge
+git submodule update --init
+</pre></div>
+</div>
+<p>There are several submodules utilized by this project: no-os,
+tinyuf2, tinyUSB and uf2.</p>
+</section>
+<section id="config-mk">
+<h2>Config.mk<a class="headerlink" href="#config-mk" title="Link to this heading"></a></h2>
+<p>All of the primary build configuration variables are located in config.mk and
+are required to be specified for the building process.</p>
+<div class="line-block">
+<div class="line"><strong>NOTE</strong> If any values in config.mk change the Makefile will automatically
+perform a clean build to ensure the values are applied to all aspects of the
+project.</div>
+</div>
+<section id="platform">
+<h3>PLATFORM<a class="headerlink" href="#platform" title="Link to this heading"></a></h3>
+<p>Specifies the Platform the project should be built for.
+Current options are <cite>ADIN1140</cite> and <cite>E2BUSB</cite>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Conditional source files depending on the hardware platform
+# Options are: ADIN1140 - EVAL-ADIN1140D1Z
+#              E2BUSB   - E2B to USB Adapter Board
+PLATFORM := E2BUSB
+</pre></div>
+</div>
+</section>
+<section id="app">
+<h3>APP<a class="headerlink" href="#app" title="Link to this heading"></a></h3>
+<p>Specifies the application to build. By default <cite>T1S_Bridge</cite> is built. The <cite>APP</cite>
+value corresponds directly with the folder name located in <code class="docutils literal notranslate"><span class="pre">./src/Apps/</span></code>.</p>
+</section>
+<section id="use-bootloader">
+<h3>USE_BOOTLOADER<a class="headerlink" href="#use-bootloader" title="Link to this heading"></a></h3>
+<p>By setting <cite>USE_BOOTLOADER</cite> to 1, the application assumes a bootloader is located
+in the upper portion of flash and will manage running the application.  When
+set to 1, the application will start at <cite>FLASH_BOOT_SIZE</cite> offset in memory. In
+addition, a UF2 file will automatically be generated for drag-and-drop programming.</p>
+<p>It is important to note that the bootloader <strong>MUST</strong> be programmed into flash
+when using this option since the application will no longer be at the flash
+origin, it will not start without the bootloader kicking it off.</p>
+</section>
+<section id="flash-boot-size">
+<h3>FLASH_BOOT_SIZE<a class="headerlink" href="#flash-boot-size" title="Link to this heading"></a></h3>
+<p>This is the amount of flash used by the bootloader, and will be the offset in
+flash that the application starts. 32kB is the default value and is sufficient.
+If the bootloader is modified to support additional functionality, this may
+need to be adjusted.</p>
+</section>
+<section id="python">
+<h3>PYTHON<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
+<p>The UF2 generation tool is a python script.  On most systems leaving this
+variable as <cite>python</cite> is sufficient. However, if your python installation is
+not in your PATH, this can be adjusted.</p>
+</section>
+</section>
+<section id="building-the-application-project">
+<h2>Building the Application Project<a class="headerlink" href="#building-the-application-project" title="Link to this heading"></a></h2>
+<p>This project utilizes Analog Devices’ Code Fusion Studio (CFS) version 2.1.0.</p>
+<ol class="arabic simple">
+<li><p>Open the project folder in VS Code with the CFS extension installed. The
+folder should be the root folder that contains the Makefile.</p></li>
+<li><p>Select the CodeFusion Studio Plugin window.</p></li>
+<li><p>In the Actions panel, select <cite>Build (max32690-usb-spe-bridge)</cite></p></li>
+</ol>
+<p>Upon completion a summary of the project should be present in the VS Code
+terminal. For example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Memory region         Used Size  Region Size  %age Used
+    ROM:                  0 B       128 KB      0.00%
+    FLASH:            99996 B      3328 KB      2.93%
+    PAL_NVM_DB:           0 B          0 B
+    RISCV_FLASH:          0 B          0 B
+    SRAM:            290904 B         1 MB     27.74%
+    MAILBOX_0:            0 B          0 B
+    MAILBOX_1:            0 B          0 B
+    HPB_CS0:              0 B       256 MB      0.00%
+    HPB_CS1:              0 B       256 MB      0.00%
+arm-none-eabi-size --format=berkeley /d/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
+text    data     bss     dec     hex filename
+97956    2040  288856  388852   5eef4 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
+</pre></div>
+</div>
+<section id="flashing">
+<h3>Flashing<a class="headerlink" href="#flashing" title="Link to this heading"></a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Ensure your debug probe (OpenOCD/Pico, or JLink) is connected to your target
+hardware and the hardware is powered on.</p>
+</div>
+<ol class="arabic">
+<li><p>Select the CodeFusion Studio Plugin window.</p></li>
+<li><p>In the Actions panel, select</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>The terminal window will indicate the flashing operation. Below is a typical
+output for OpenOCD/PICO based flashing.  JLink output will differ from this.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to &quot;armv7e-m&quot;.
+`Open On-Chip Debugger (Analog Devices 0.12.0-1.2.0)  OpenOCD 0.12.0 (2025-04-03-09:08)
+Licensed under GNU GPL v2
+Report bugs to &lt;processor.tools.support@analog.com&gt;
+0x0000fff4 in ?? ()
+Loading section .text, size 0x17e9c lma 0x10000000
+Loading section .ARM.exidx, size 0x8 lma 0x10017e9c
+Loading section .data, size 0x7f8 lma 0x10017ea4
+Start address 0x10005fb8, load size 99996
+Transfer rate: 33 KB/sec, 11110 bytes/write.
+Section .text, range 0x10000000 -- 0x10017e9c: matched.
+Section .ARM.exidx, range 0x10017e9c -- 0x10017ea4: matched.
+Section .data, range 0x10017ea4 -- 0x1001869c: matched.
+SWD DPIDR 0x2ba01477
+[max32xxx.cpu] halted due to breakpoint, current mode: Thread
+xPSR: 0x01000000 pc: 0x0000fff4 msp: 0x2000a900
+[Inferior 1 (Remote target) detached]
+</pre></div>
+</div>
+</section>
+<section id="debugging">
+<h3>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Ensure your debug probe (OpenOCD/Pico, or JLink) is connected to your target
+hardware and the hardware is powered on.</p>
+</div>
+<p>In the VS Code, select the Run and Debug panel from the left side (1), and using
+the Run and Debug drop down (2) select the Debug action based on your connected
+debug probe.</p>
+<p>Select the play button (3) to start the debugging session.</p>
+<p><img alt="img_vscode_debug" src="_images/vscode_debug.png" /></p>
+</section>
+<section id="uf2-file-generation">
+<h3>UF2 File Generation<a class="headerlink" href="#uf2-file-generation" title="Link to this heading"></a></h3>
+<p>If <cite>USE_BOOTLOADER</cite> is enabled in config.mk, at the completion of the build
+process, a .uf2 file will be created in the build folder. This can be used for
+drag-and-drop programming.</p>
+</section>
+</section>
+<section id="building-the-bootloader-project">
+<h2>Building the Bootloader Project<a class="headerlink" href="#building-the-bootloader-project" title="Link to this heading"></a></h2>
+<p>The bootloader build tasks are accessed from the _application_ project folder
+as above. This allows for build-flash-run of both the bootloader and application
+from the same VS Code window.</p>
+<ol class="arabic simple">
+<li><p>Select the CodeFusion Studio Plugin window.</p></li>
+<li><p>In the Actions panel, select <cite>CFS: Bootloader Build (max32690-usb-spe-bridge)</cite></p></li>
+</ol>
+<p>Upon completion a summary of the project should be present in the VS Code
+terminal. For example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Memory region     Used Size  Region Size  %age Used
+    ROM:               0 B       128 KB      0.00%
+    FLASH:         25436 B        32 KB     77.62%
+    SRAM:          26424 B    1048572 B      2.52%
+    HPB_CS0:           0 B       256 MB      0.00%
+    HPB_CS1:           0 B       256 MB      0.00%
+arm-none-eabi-size --format=berkeley D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
+text    data     bss     dec     hex filename
+25436       0   24008   49444    c124 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
+</pre></div>
+</div>
+<section id="id1">
+<h3>Flashing<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Ensure your debug probe (OpenOCD/Pico, or JLink) is connected to your target
+hardware and the hardware is powered on.</p>
+</div>
+<ol class="arabic">
+<li><p>Select the CodeFusion Studio Plugin window.</p></li>
+<li><p>In the Actions panel, select</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>The terminal window will indicate the flashing operation. Below is a typical
+output for OpenOCD/PICO based flashing.  JLink output will differ from this.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to &quot;armv7e-m&quot;.
+Open On-Chip Debugger (Analog Devices 0.12.0-1.2.0)  OpenOCD 0.12.0 (2025-04-03-09:08)
+Licensed under GNU GPL v2
+Report bugs to &lt;processor.tools.support@analog.com&gt;
+0x000001e4 in ?? ()
+Loading section .text, size 0x59e4 lma 0x10000000
+Loading section .ARM.exidx, size 0x8 lma 0x100059e4
+Loading section .data, size 0x970 lma 0x100059ec
+Start address 0x10003ef4, load size 25436
+Transfer rate: 14 KB/sec, 6359 bytes/write.
+Section .text, range 0x10000000 -- 0x100059e4: matched.
+Section .ARM.exidx, range 0x100059e4 -- 0x100059ec: matched.
+Section .data, range 0x100059ec -- 0x1000635c: matched.
+[max32xxx.cpu] halted due to breakpoint, current mode: Thread
+xPSR: 0x01000000 pc: 0x000001e4 msp: 0x2000a700
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Debugging<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Currently there is not an integrated Debug task for the Bootloader project.
+Similar debug techniques as the application can be used with OpenOCD or JLink as
+needed.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="usersguide.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">User’s Guide</a>
+    <a href="portingguide.html" title="Next document (Alt+Shift+RightArrow)" class="next">Porting Guide</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
