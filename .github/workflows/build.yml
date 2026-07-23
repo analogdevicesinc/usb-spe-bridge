@@ -1,0 +1,134 @@
+##
+# Copyright © 2025 by Analog Devices, Inc.  All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+##
+
+name: Build Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+defaults:
+    run:
+      shell: bash
+      working-directory: ./
+
+jobs:
+    build-t1s-usb:
+      runs-on: ubuntu-latest
+      env:
+        SOURCE_BRANCH: ${{github.ref_name}}
+        TARGET_BRANCH: ${{github.event.pull_request.base.ref}}
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+            with:
+              submodules: 'true'
+              ref: ${{ github.head_ref }}
+              fetch-depth: 0
+              persist-credentials: false
+
+          - name: Install ARM GCC Toolchain (arm-none-eabi-gcc)
+            # Re-used workflow for ARM GCC already includes caching
+            uses: carlosperate/arm-none-eabi-gcc-action@0725d97b026acf7fc8e22dfd5bee912998879ba8
+            id: arm-none-eabi-gcc-action
+            with:
+              release: '14.3.Rel1' # <-- The compiler release to use
+
+          - name: Cache RISC-V Toolchains
+            uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+            id: cache-riscv
+            with:
+              path: |
+                /home/runner/riscv-none-embed-gcc
+                /home/runner/riscv-none-elf-gcc
+                /home/runner/.local/xPacks
+              key: riscv-toolchains-${{ runner.os }}-10.2.0-1.2.1-12.2.0-3.1
+              restore-keys: |
+                riscv-toolchains-${{ runner.os }}-
+
+          - name: Install RISC-V Toolchains
+            if: steps.cache-riscv.outputs.cache-hit != 'true'
+            run: |
+              # Install xpm
+              npm install --global xpm@latest
+
+              # Install both RISC-V toolchains
+              xpm install --global @xpack-dev-tools/riscv-none-embed-gcc@10.2.0-1.2.1
+              xpm install --global @xpack-dev-tools/riscv-none-elf-gcc@12.2.0-3.1
+
+              # Copy to consistent locations
+              cp -r /home/runner/.local/xPacks/@xpack-dev-tools/riscv-none-embed-gcc /home/runner/riscv-none-embed-gcc
+              cp -r /home/runner/.local/xPacks/@xpack-dev-tools/riscv-none-elf-gcc /home/runner/riscv-none-elf-gcc
+
+              # Add to PATH
+              echo "/home/runner/riscv-none-embed-gcc/10.2.0-1.2.1/.content/bin" >> $GITHUB_PATH
+              echo "/home/runner/riscv-none-elf-gcc/12.2.0-3.1/.content/bin" >> $GITHUB_PATH
+
+          - name: Cache msdk
+            uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+            id: cache-msdk
+            with:
+              path: ${{ github.workspace }}/msdk
+              key: msdk-${{ runner.os }}-main
+              restore-keys: msdk-${{ runner.os }}-
+
+          - name: Clone msdk
+            if: steps.cache-msdk.outputs.cache-hit != 'true'
+            run: |
+              # If restore key is matched, directory may exist but show a cache miss,
+              # so check first before cloning
+              if [ ! -d "msdk" ]; then
+                git clone --depth 1 --branch main https://github.com/analogdevicesinc/msdk.git
+              else
+                echo "msdk directory already exists (restored from cache), skipping clone"
+              fi
+
+          # Use a problem matcher for error propagation to GitHub Actions UI
+          # docs: https://github.com/actions/toolkit/blob/main/docs/problem-matchers.md
+          - name: Setup GCC problem matcher
+            run: echo "::add-matcher::.github/gcc-problem-matcher.json"
+
+          - name: Build T1S USB Project
+            env:
+                MAXIM_PATH: ${{ github.workspace }}/msdk
+            continue-on-error: false
+            run: |
+              make -r -j --output-sync=target --no-print-directory TARGET=MAX32690 BOARD=APARD MAKE=make PROJECT=spe-bridge
+
+          - name: Remove problem matcher
+            if: always()
+            run: |
+              echo "::remove-matcher owner=gcc-error::"
+              echo "::remove-matcher owner=gcc-warning::"
+              echo "::remove-matcher owner=gcc-note::"
+              echo "::remove-matcher owner=linker-error::"
+              echo "::remove-matcher owner=undefined-reference::"
+
+    cleanup:
+      needs: build-t1s-usb
+      if: always()
+      runs-on: ubuntu-latest
+      steps:
+          - name: Cleanup workspace (Linux, MacOS)
+            if: runner.os == 'Linux' || runner.os == 'macOS'
+            shell: sh
+            run: |
+              ls -la ./
+              rm -rf ./* || true
+              rm -rf ./.??* || true
+              ls -la ./
+
+          - name: Cleanup workspace (Windows)
+            if: runner.os == 'Windows'
+            shell: powershell
+            run: |
+              Get-ChildItem -Force
+              Remove-Item -Force -Recurse .\* -ErrorAction SilentlyContinue
+              Remove-Item -Force -Recurse .\.??* -ErrorAction SilentlyContinue
+              Get-ChildItem -Force

@@ -1,0 +1,163 @@
+##
+# Copyright © 2025 by Analog Devices, Inc.  All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+##
+
+name: Style & Lint Checks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+defaults:
+    run:
+      shell: bash
+      working-directory: ./
+
+jobs:
+    uncrustify-style-check:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+            with:
+              submodules: 'true'
+              ref: ${{ github.head_ref }}
+              fetch-depth: 0
+              persist-credentials: false
+
+          - name: Install uncrustify
+            id: install-uncrustify
+            run: |
+              sudo apt-get update && sudo apt-get install uncrustify
+
+          - name: Run uncrustify
+            run: |
+              # Exit immediately on:
+              # - error (-e)
+              # - undefined variable (-u)
+              # - failure in a pipeline (pipefail)
+              set -euo pipefail
+
+              # Map all .c and .h files under src/ into an array
+              # -print0 handles files with spaces
+              mapfile -d '' files < <(
+                find ./src -type f \
+                    \( -name "*.c" -o -name "*.h" \) -print0
+                )
+
+              failed=0
+
+              for f in "${files[@]}"; do
+                echo "Checking formatting: $f"
+
+                # Create a temporary file to store formatted output
+                tmp="$(mktemp)"
+
+                uncrustify -c uncrustify.cfg -f "$f" -o "$tmp"
+
+                if ! diff -u "$f" "$tmp"; then
+                  # Emit a GitHub Actions error annotation tied to this file
+                  echo  "::error file=$f::Formatting mismatch"
+                  failed=1
+                fi
+
+                rm -f "$tmp"
+              done
+
+              exit $failed
+
+          - name: Cleanup workspace (Linux, MacOS)
+            if: runner.os == 'Linux' || runner.os == 'macOS'
+            shell: sh
+            run: |
+              ls -la ./
+              rm -rf ./* || true
+              rm -rf ./.??* || true
+              ls -la ./
+
+          - name: Cleanup workspace (Windows)
+            if: runner.os == 'Windows'
+            shell: powershell
+            run: |
+              Get-ChildItem -Force
+              Remove-Item -Force -Recurse .\* -ErrorAction SilentlyContinue
+              Remove-Item -Force -Recurse .\.??* -ErrorAction SilentlyContinue
+              Get-ChildItem -Force
+    cpplint:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+            with:
+              submodules: 'true'
+              ref: ${{ github.head_ref }}
+              fetch-depth: 0
+              persist-credentials: false
+
+          - name: Install cpplint
+            id: install-cpplint
+            run: |
+              sudo apt-get update && sudo apt-get install cpplint
+
+          - name: Run cpplint
+            run: |
+              # Exit immediately on:
+              # - error (-e)
+              # - undefined variable (-u)
+              # - failure in a pipeline (pipefail)
+              set -euo pipefail
+
+              # Map all .c and .h files under src/ into an array
+              # -print0 handles files with spaces
+              mapfile -d '' files < <(
+                find ./src -type f \
+                    \( -name "*.c" -o -name "*.h" \) -print0
+                )
+
+              failed=0
+
+              for f in "${files[@]}"; do
+                echo "Linting: $f"
+
+                # Run cpplint and capture output and exit code
+                # cpplint writes to stderr, so redirect to stdout for capture
+                if ! output=$(cpplint "$f" 2>&1); then
+                  # cpplint failed - emit the output
+                  echo "$output"
+
+                  # CPPLint outputs lots of verbose errors, so treat as warnings for now.
+                  if echo "$output" | grep -q "Total warnings found:"; then
+                    warn_count=$(echo "$output" | grep "Total warnings found:" | awk '{print $4}')
+                    echo "::warning file=$f::$warn_count cpplint warning(s) found"
+                  else
+                    echo "::warning file=$f::cpplint check failed"
+                  fi
+
+                  failed=1
+                fi
+              done
+
+              exit $failed
+
+          - name: Cleanup workspace (Linux, MacOS)
+            if: runner.os == 'Linux' || runner.os == 'macOS'
+            shell: sh
+            run: |
+              ls -la ./
+              rm -rf ./* || true
+              rm -rf ./.??* || true
+              ls -la ./
+
+          - name: Cleanup workspace (Windows)
+            if: runner.os == 'Windows'
+            shell: powershell
+            run: |
+              Get-ChildItem -Force
+              Remove-Item -Force -Recurse .\* -ErrorAction SilentlyContinue
+              Remove-Item -Force -Recurse .\.??* -ErrorAction SilentlyContinue
+              Get-ChildItem -Force
