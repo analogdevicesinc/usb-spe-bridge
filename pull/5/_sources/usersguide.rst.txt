@@ -1,0 +1,720 @@
+User's Guide
+============
+
+The MACPHY USB to T1S bridge is a software driven bridge/media converter
+project, allowing direct network access to a 10Base-T1S network via
+USB.  The 10Base-T1S connectivity is provided by the Analog Devices
+AD3306 MACPHY. The microcontroller, including USB connectivity, is
+provided by the Analog Devices MAX32690 MCU. Features of this project
+include:
+
+-  Software controlled USB networking (NCM) - Windows, Linux and Mac
+   compatible
+-  Integrated USB serial console for control and configuration
+-  Non-Volatile memory for persistent settings
+-  Bootloader with USB mass storage for easy reprogramming
+-  Wireshark and EdgeStudio support (via networking)
+-  EdgeStudio support (via USBi)
+
+Getting Started
+===============
+
+Installing Device Drivers
+-------------------------
+
+The MACPHY USB to T1S comes pre-loaded with the bridge software so it is
+ready to use out of the box. The USB descriptor features a standard NCM
+and CDC Serial device classes, and do not require special drivers to be
+installed on your system and should enumerate automatically when
+connected.
+
+| The device IDs are:
+|  - VID: 0x0456 (Analog Devices)
+|  - PID: 0x1140
+
+**Windows**
+
+Once installed, the device should appear as an Analog Devices T1S
+Network Interface in the device manager:
+
+|img_devman_ncm|
+
+And as a valid network device in the Network Adapters. Note the adapter
+name (i.e. Ethernet 9) may be different on your machine:
+
+|img_win_netadapters|
+
+As well as a Generic Serial Port in the device manager.  Note the COM
+number may be different on your machine:
+
+|img_devman_serial|
+
+**Linux**
+
+For most standard Linux installations, no additional device drivers are
+required for us.  The project has been tested with out-of-the-box
+versions of Ubuntu and Raspberry PI OS.  When connected to a Linux
+system, detection of the device can be verified with the command
+``lsusb`` , looking for the ``0456:1140`` device VID and PID.
+
+|img_lsusb|
+
+Further, the device will appear as a network device, visible to tools
+such as ``ifconfig`` , as well as the device itself within
+``/sys/class/net``. Note, the device name (i.e eth1) may be different on
+your machine.
+
+|img_ifconfig|
+
+The integrated USB serial console will also be present within the
+``/dev/`` folder, typically as ``/dev/ttyACM#``  or ``/dev/ttyUSB#``
+
+|img_ls_serial|
+
+**Mac OS**
+
+USB-NCM and USB serial is natively supported on MacOS, however this project has
+not yet been tested on MacOS systems.
+
+Network Configuration
+---------------------
+
+The NCM network device will appear as any standard networking adapter
+for your host computer, and can be configured the same as any other
+connection.  For use as a general network monitor (sniffer) or L2
+networking only (e.g. E2B), configuring an IP address is not necessary.
+However, for TCP/IP networking, it is recommended to set a compatible IP
+address for your network.  The process for configuring an IP address is
+not specific to this device, however here are some helpful links:
+
+-  Windows - `Essential Network Settings and
+   Tasks <https://support.microsoft.com/en-us/windows/essential-network-settings-and-tasks-in-windows-f21a9bbc-c582-55cd-35e0-73431160a1b9>`__
+-  Raspberry PI - `Network
+   Configuration <https://www.raspberrypi.com/documentation/computers/configuration.html#networking>`__
+-  Ubuntu - `Network
+   Manual <https://help.ubuntu.com/stable/ubuntu-help/net-manual.html.en>`__
+-  Mac OS -
+
+USB Console Port
+----------------
+
+The configuration of the device is done through a USB emulated serial
+port.  When connecting to the port, the baud rate and other settings are
+ignored due to the direct USB connection.  There are a variety of tools
+which can be used to access the console, with just a few listed below.
+Tool choice is a matter of preference and the functionality should be
+consistent regardless.
+
+The menu system leverages VT100 style special characters. Ensure the
+terminal emulation mode of your tool of choice is setup for VT100 for
+best performance.
+
+-  Windows
+
+   -  `Putty <https://www.chiark.greenend.org.uk/~sgtatham/putty/>`__
+   -  `TeraTerm <https://teratermproject.github.io/index-en.html>`__
+
+-  Linux
+
+   -  `picocom <https://github.com/npat-efault/picocom>`__
+   -  `minicom <https://man7.org/linux/man-pages/man1/minicom.1.html>`__
+
+-  Mac OS
+
+   -  `CoolTerm <https://freeware.the-meiers.org/CoolTermHelp/>`__
+
+Hardware Overview
+=================
+
+|img_layout|
+
+Connectors and Jumpers
+----------------------
+
+**P1 - USB**
+
+P1 is the USB-C connector which provides 5V power to the board and USB
+connectivity to the microcontroller providing the USB networking device
+and serial console.
+
+**P8 - T1S**
+
+P8 is the connector for joining the T1S network with unshielded, twisted
+pair wire. The connector is compatible with standard Phoenix Contact
+3.81 mm pitch terminals.
+
+**P2 - USBi**
+
+
+**P9 / P10 - T1S Termination**
+
+P9 and P10 provide 50 Ohm termination to the T1S data bus.  When
+operating as the end node (the first or last node) on a bus, install
+jumpers on P9 and P10 to correctly terminate the bus. When installed as
+a drop or middle node on a multi-drop bus, leave P9 and P10 open.
+
+LEDs
+----
+
+**LED1 - Bootloader / USBi**
+
+LED1 is a red LED. When illuminated, it indicates the MCU is currently
+in the bootloader state, awaiting a new software load. The USB
+connection will be the bootloader's mass storage device and normal
+networking bridge operation will not be active.
+
+This mode also allows the USBi connector to be used for direct SPI
+interaction with the AD3306 MACPHY for use with EdgeStudio and USBi
+adapter. The MCU's SPI peripheral will be in reset, allowing
+unrestricted access to the SPI signals.
+
+**LED2 - T1S Activity**
+
+LED2 is a greed LED. Flashing indicates *inbound* activity on the T1S
+network interface.   Given the functionality of the software is a
+bridge, the LED indicates inbound activity only to help determine the
+origin of network traffic.
+
+**LED4 - USB Activity**
+
+LED4 is a greed LED. Flashing indicates *inbound* activity on the USB
+network interface. Given the functionality of the software is a bridge,
+the LED indicates inbound activity only to help determine the origin of
+network traffic.
+
+**D7 - Mode**
+
+D7 is a tri-color LED used to indicate operating mode.
+
+-  Green - When illuminated green, this indicates the software is
+   operating in bridge mode, allowing bidirectional traffic between the
+   USB network interface and the T1S network
+-  Blue - When illuminated blue, this indicates the software is
+   operating in sniffer mode, allowing the USB network interface to
+   monitor T1S traffic, but not send data onto the T1S network.
+
+**Power Good LEDs**
+
+In addition, D2 (1.1V), D3 (5V), and D4 (3.3V) are red LEDs providing
+power good indicators for the on-board power supplies. It is expected
+these are all illuminated upon USB-C power being applied. These LEDs are
+not called out in the above figure.
+
+Push Buttons
+------------
+
+**SW1 - Reset**
+
+The reset button is connected directly to the physical reset line(s) of
+the devices issuing a board-wide reset.
+
+The reset button may be also used to enter the bootloader by pressing
+the reset button twice, within 500ms of each other. This will enter
+bootloader mode and allow for reprogramming or USBi operation.
+
+**SW2 - BOOT**
+
+The BOOT button allows the user to enter the bootloader from the
+software application.  While the bridge software is running, press and
+hold BOOT for 3 seconds, this will restart the MCU into bootloader/USBi
+mode without needing to perform a Reset double tap.
+
+**SW3 - USER**
+
+The USER button allows switching between bridge and sniffer modes in
+real time during operation.  Press and hold USER for 3 seconds to toggle
+the current operating mode.
+
+Note: The operating mode selected by the USER button is not saved
+through power cycles.  See the Configuration section for information on
+setting the power up default.
+
+General Operation
+=================
+
+Bridge Mode
+-----------
+
+Bridge mode is the primary operating mode of the system, allowing a host
+computer to join a 10Base-T1S network via the USB network interface.
+
+It is important to understand that the Bridge should be considered a
+transparent device similar to a USB to Ethernet or Wifi adapter would
+be.  In other words, the bridge itself is *not* a node on the network,
+but rather the USB host is the active network node.  As part of the
+configuration, the bridge has an assignable MAC address. This MAC
+address is the address of the USB interface of the host.
+
+During operation, the bridge transparently moves incoming frames from
+USB out T1S, and vice versa, The T1S network is capable of a maximum of
+10Mbps, while the USB network interface is capable of supporting more.
+Through the use of internal buffers, there is some tolerance for USB
+rates exceeding 10Mbps, however if the host exceeds this rate beyond the
+capacity of buffering, the frames will be silently dropped by the
+bridge.  The statistics of network traffic, including the number of
+dropped frames can be seen from the console interface ``stats``
+command.
+
+This mode is indicated by a green status LED D7. To switch to Bridge
+mode from sniffer mode, hold down the USER button for 3 seconds until D7
+turns green.  Bridge mode can be set as the power on default mode via
+the console interface.
+
+Sniffer Mode
+------------
+
+Sniffer mode provides similar functionality to Bridge mode by joining a
+T1S network via USB, however traffic is restricted to the USB host only
+receiving T1S bus data, not allowing data to be put on to the bus.  The
+primary use case of this mode is with tools such as Wireshark to allow
+passive monitoring and inspection of the bus traffic for debugging and
+characterization.
+
+From a host computer stand point, there is no visible difference between
+bridge and sniffer modes in how the network interface is added and
+displayed in the system, as standard USB network interfaces (NCM in this
+case) do not offer a simplex configuration option.  The traffic control
+preventing USB origin traffic from the T1S bus is done in the bridge
+software, where USB frames are silently dropped.  These dropped frames
+will not be indicated in the ``stats`` display when in sniffer mode.
+
+Depending on the host PC, the system may attempt to send frames over
+the USB network interface as part of its normal operation (DHCP
+requests, local network advertising, etc).  These frames will be dropped
+by the bridge, however will be visible in tools such as Wireshark as
+transmitted traffic.  It is recommend to apply a Rx only filter when
+using Wireshark to get a clear visual of the actual T1S bus.
+
+This mode is indicated by a blue status LED D7. To switch to sniffer
+mode from bridge mode, hold down the USER button for 3 seconds until D7
+turns blue.  Sniffer mode can be set as the power on default mode via
+the console interface.
+
+.. tip::
+
+   While sniffer mode is limited to only receiving traffic from the T1S bus, the
+   node is still inherently part of the network bus. Caution must be used to
+   ensure there are no conflicts when PLCA is enabled.
+
+   |
+
+   If PLCA is enabled on the bus, verify the sniffer's ID is unique amongst all
+   other nodes.  Alternatively, PLCA may be disabled on the sniffer node to
+   avoid any conflicts, regardless of the PLCA usage of the rest of the bus.
+
+
+Bootloader / USBi Mode
+----------------------
+
+In bootloader mode, the main MCU software is not loaded and instead a
+USB-based drag-and-drop bootloader is running to support program
+updates.  The USB interface will appear as a mass storage device on the
+host PC. See Re-Programming for additional details on using this mode.
+
+This mode is indicated by a red status LED1. To enter bootloader mode,
+hold the BOOT button for 3 seconds while in bridge or sniffer mode. This
+will reset the board into the bootloader. Alternatively, preset the
+RESET button twice within 500ms to enter the bootloader.
+
+**USBi**
+
+While in bootloader mode, many of the MAX32690 MCU peripheral
+interfaces, including the SPI bus to the AD3306 are disabled.  This
+allows use of the P2 USBi to directly utilize the SPI bus to the AD3306
+with EdgeStudio.  See the EdgeStudio user's guide for more information
+on using the USBi interface within the tools.
+
+Console Interface and Configuration
+===================================
+
+The console interface is provided through a USB virtualized serial port.
+See USB Console Port for recommendations on terminal tools for your host
+computer.  The terminal is a menu-based system.
+
+On most terminal software, the Up/Down arrow keys can navigate the menu,
+however some terminal applications do not support the arrows correctly.
+As an alternative the ``w`` (up) and ``s`` (down) keys can be used
+instead.
+
+Menu Navigation:
+
+-  Up/Down or w/s, Move the selected menu index up or down
+-  Enter - Enter the sub menu or configuration field
+-  ESC - Go back a page
+
+A typical menu will look like the following, with the actively selected
+row highlighted:
+
+|img_mainmenu|
+
+When editing configuration values, or other screens which require user
+input, contextual help will be displayed to indicate the purpose of the
+field, ranges and other useful information. Below is an example of a
+configuration screen for the MAC address:
+
+|img_mac_edit|
+
+**Main Tree**
+
+For reference, the menu tree is expanded in the diagram below.  Detailed
+descriptions of these blocks are in the paragraphs that follow.
+
+|img_menu_tree|
+
+Main Menu
+---------
+
+**Main Menu - System Information**
+
+Displays current runtime information on the system:
+
+-  Version: This is the git hash used to build the running software.
+   Code which has been modified from the commit will be tagged *dirty*,
+   while releases will be tagged with their git release.
+-  Build Date: The date and time the software was compiled
+-  MAC: The current MAC address assigned to the USB network interface
+-  PLCA: The current state of the PLCA function on the AD3306, its
+   enable status, ID, and number of PLCA nodes
+-  AD3306: Indicates the mode of the AD3306/T1S interface. This should
+   always say Tx/Rx
+-  USB: Indicates the mode of the USB interface. This will say Tx/Rx in
+   bridge mode, and RX Only in sniffer mode.
+
+.. code:: text
+
+   Version: v1.0.0-rc2
+   Build Date: 06-17-2026 17:08
+   MAC: 00:E0:22:33:00:00
+   PLCA: Enabled, ID: 0, Count: 16
+   AD3306 (T1S): TX/RX
+   USB: TX/RX
+
+**Main Menu - Network Statistics**
+
+Displays the network statics of each interface, including the number of
+frames that were dropped.  Note, the dropped frames do not include any
+frames intentionally dropped due to being in sniffer mode, only frames
+dropped due to buffer capacity or other reasons.
+
+When operating in sniffer mode, the USB interface will only display
+outbound statistics as all inbound frames are dropped automatically.
+
+.. code:: text
+
+   AD3306 (T1S):
+     Outbound: 94, Dropped: 0
+     Inbound: 0, Dropped: 0
+   USB:
+     Outbound: 0, Dropped: 0
+     Inbound: 94, Dropped: 0
+
+**Main Menu - FreeRTOS Usage Information**
+
+Displays runtime information for the FreeRTOS system running the bridge
+software. This is useful for software development and debug, as well as
+understanding CPU resource utilization when operating under a variety of
+network conditions.
+
+-  Uptime: The amount of time the software has been running since the
+   last reboot or power cycles
+-  Heap: The amount of remaining heap space in the FreeRTOS dynamic
+   memory allocator.
+
+   -  Note: The system uses dynamic allocation at start up, but not
+      during runtime. This value should be fixed following
+      initialization.
+
+-  Task Information:
+
+   -  Task: Plaintext task name
+   -  CPU%: Approximate CPU utilization as a percentage of the overall
+      system
+   -  PRI: Task priority. Higher is a higher priority
+   -  S_BASE: Base address in RAM of this task's stack
+   -  S_MARGIN: The number of bytes remaining in the task's stack at its
+      highest usage. A watermark of the *least* amount of stack space
+      available since running.
+
+.. code:: text
+
+   Uptime: 3844 seconds
+   FreeRTOS Heap: 5896 / 71680 Bytes Available (8%)
+
+   | Task       | CPU% | PRI |   S_BASE   | S_MARGIN |
+   |============|======|=====|============|==========|
+   | CDC        |   <1 |   4 | 0x20057138 |    680 B |
+   | CONFIG     |   <1 |   3 | 0x200575b8 |    532 B |
+   | IDLE       |   99 |   0 | 0x20015a84 |    472 B |
+   | Background |   <1 |   1 | 0x20047c70 |   1240 B |
+   | Logging    |   <1 |   2 | 0x200489a0 |    380 B |
+   | USBD       |   <1 |   6 | 0x20056b18 |    696 B |
+   | OASPI_U0   |   <1 |   8 | 0x20056698 |    892 B |
+   | OASPI0     |   <1 |   7 | 0x20055a18 |   2576 B |
+
+**Main Menu - Configuration Menu**
+
+Opens the configuration menu.
+
+**Main Menu - AD3306 Debug**
+
+Opens the AD3306 debug menu.
+
+Configuration Menu
+------------------
+
+The configuration menu is used to set the power on values for various
+system settings.  Once a setting is changed it will automatically be
+saved to EEPROM.  The settings will be applied at the next power
+cycle/boot.
+
+|img_config_menu|
+
+This settings are the power on default values only. Changing settings
+here will NOT impact the current system unless the software is cycled.
+
+**Configuration Menu - MAC Address**
+
+Configures the MAC address assigned to the USB network interface.  The
+MAC address should consist of 6 octets and is provided in the typical
+ordering with OUI first.  When the Auto MAC Assignment mode is enabled,
+this will not be used as the MAC address will be derived from the MCU
+serial number instead.
+
+The command accepts address in two forms:`` AABB1234DF``
+or\ `` AA:BB:12:34:DF``.
+
+**Configuration Menu - Auto MAC Assign**
+
+Enables or disables the automatic MAC USB network address assignment at
+power up. When enabled, the MAC address is derived from the unique
+identifier of the MAX32690 MCU.  The upper 3 octets will be ADI's OUI
+(00:E0:22) and the lower 3 octets based on the unique identifier.  When
+disabled, the value in the user-specified MAC Address will be used.
+
+**Configuration Menu - USB Sniffer Mode**
+
+Enables or disables the sniffer feature of the software, which silently
+drops the frames received on the USB network link.  This command
+represents the default power on state of sniffer mode. See the Sniffer
+section for information on runtime configuration.
+
+**Configuration Menu - Load Default Settings**
+
+Restores the configuration to the default settings:
+
+-  PLCA
+
+   -  ID: 0
+   -  Count: 16
+   -  Enabled
+   -  TO Timer: 32
+   -  Burst Timer: 128
+   -  Burst Count: 0
+
+-  VLAN Filtering
+
+   -  Disabled
+   -  Block Mode: Off
+   -  ID1: 0
+   -  ID2: 0
+
+-  ETHTYPE Filtering
+
+   -  Disabled
+   -  Block Mode: Off
+   -  ID1: 0
+   -  ID2: 0
+
+-  MAC Address: 00:E0:22:FE:70:F0
+-  Auto MAC Assign: Enabled
+-  USB Sniffer Mode: Off
+
+**Configuration Menu - Reboot**
+
+Performs a soft reboot of the system without needing direct access to
+the hardware or reset button. This allows a quick shortcut to have the
+saved configuration settings get applied to the system.
+
+PLCA Config Menu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Opens the PLCA Configuration Menu.
+
+|img_plca_menu|
+
+**PLCA Config Menu - PLCA ID**
+
+Sets the PLCA ID for the AD3306 node on the bus. When PLCA is enabled,
+each node on the network should have a unique ID. This will have no
+effect if PLCA is disabled.
+
+**PLCA Config Menu - PLCA Count**
+
+Configures the number of PLCA nodes on the T1S network. This option will
+have no effect if PLCA is disabled.
+
+**PLCA Config Menu - PLCA Enabled**
+
+Enables or disables the PLCA operation of the AD3306.
+
+**PLCA Config Menu - PLCA TO Timer**
+
+Configures the transmit opportunity value for the PLCA, setting the
+minimum duration of the PLCA transmission. Value is in units of Tbits.
+
+**PLCA Config Menu - PLCA Burst Timer**
+
+Configures the burst timer, setting the maximum wait time for a new
+packet in burst mode. Value is in units of 100ns.
+
+**PLCA Config Menu - PLCA Burst Count**
+
+Sets the number of frames the node can transmit in burst mode.
+
+VLAN Filter Config Menu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Opens the VLAN Filter configuration menu.
+
+|img_vlan_menu|
+
+**VLAN Filter Config Menu - VLAN Filter enable**
+
+Enables or disables the VLAN filtering functionality.
+
+**VLAN Filter Config Menu - VLAN Block Mode**
+
+When enabled, the filter mechanism will block/filter out all matching
+VLAN frames, passing non-matching frames. When disabled, allows the
+matching VLAN frames, blocking non-matching frames.
+
+**VLAN Filter Config Menu - ID1**
+
+Sets the VLAN ID in filter slot #1.
+
+**VLAN Filter Config Menu - ID2**
+
+Sets the VLAN ID in filter slot #2.
+
+ETHTYPE Filter Config Menu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Opens the ETHTYPE filter configuration menu.
+
+|img_ethtype_menu|
+
+**ETHTYPE Filter Config Menu - ETHTYPE Filter enable**
+
+Enables or disables the ETHTYPE filtering functionality.
+
+**ETHTYPE Filter Config Menu - ETHTYPE Block Mode**
+
+When enabled, the filter mechanism will block/filter out all matching
+ETHTYPE frames, passing non-matching frames. When disabled, allows the
+matching ETHTYPE frames, blocking non-matching frames.
+
+**ETHTYPE Filter Config Menu - ID1**
+
+Sets the ETHTYPE ID in filter slot #1.
+
+**ETHTYPE Filter Config Menu - ID2**
+
+Sets the ETHTYPE ID in filter slot #2.
+
+AD3306 Debug Menu
+-----------------
+
+The AD3306 menu provides advanced debug capabilities with direct access
+to the AD3306 MACPHY.
+
+This menu allows direct register writes to the device which can impact
+the operation of the AD3306 within the bridge software. This is intended
+for software development and debug use only.
+
+|img_ad3306_menu|
+
+**Read Register(s)**
+
+Allows direct reading of register(s) on the AD3306 MACPHY. Different register spaces may be selected by a Memory Map Select (MMS) value. Each
+register read command requires a MMS argument and register address
+argument.  Optionally, a count value may be given which will read the
+number of sequential registers at once.  If no count is given, a single
+register will be read.  The ``mms`` , ``reg``  and ``count``  may be
+provided in decimal or hexadecimal notations, with hexadecimal expecting
+a leading 0x prefix.
+
+The resulting data will be presented on screen in the format
+``<MMS><ADDR> - <VALUE>``
+
+*Example (Single):*
+
+|img_reg_read|
+
+*Example (Multiple):*
+
+|img_reg_read_multi|
+
+**Write Register**
+
+Allows direct writing of a register on the AD3306 MACPHY.  Each register
+write command requires a MMS argument, register address argument and
+value argument.   The ``mms`` , ``reg``  and ``value``  may be provided
+in decimal or hexadecimal notations, with hexadecimal expecting a
+leading 0x prefix.
+
+Re-Programming
+==============
+
+To simplify software updates, the T1S USB bridge utilizes a drag and
+drop USB-based bootloader for loading new software.  See the Bootloader
+section for information on entering bootloader mode.  Once bootloader
+mode is active, the system will appear as a mass storage device. Below
+is the expected storage device while running Windows.
+
+|img_uf2_drive|
+
+To reprogram the board, drop the provided .UF2 file into the mass
+storage drive.  Once the programming is complete, the system will
+automatically restart into the main software.  You can confirm  the
+software version was loaded correctly through the ``info`` command in
+the main menu of the console interface.
+
+The .UF2 files will be available with each release on Github.
+
+.. note::
+
+  There is a known issue on Windows machines where due to the speed the
+  device updates the flash during the drag-and-drop process and
+  immediately resetting to run the application, Windows may throw an error
+  about the device no longer existing. This can be ignored clicking the
+  cancel button.
+
+.. note::
+
+  There is a known issue on Mac OSX machines where once the UF2 file is
+  copied, an error notice might appear stating "The Finder can't
+  complete the operation because some data ... can't be read or
+  written". This can be ignored by pressing OK.
+
+.. note::
+  An additional notice of "Disk Not Ejected Properly" may appear. This
+  can also be ignored (dismiss by pressing the notice close or cancel).
+
+.. |img_devman_ncm| image:: images/devman_ncm.png
+.. |img_win_netadapters| image:: images/win_net_adapters.png
+.. |img_devman_serial| image:: images/devman_serial.png
+.. |img_lsusb| image:: images/lsusb.png
+.. |img_ifconfig| image:: images/ifconfig.png
+.. |img_ls_serial| image:: images/lsserial.png
+.. |img_layout| image:: images/board_layout.png
+.. |img_mainmenu| image:: images/main_menu.png
+.. |img_mac_edit| image:: images/mac_edit.png
+.. |img_config_menu| image:: images/config_menu.png
+.. |img_plca_menu| image:: images/plca_menu.png
+.. |img_vlan_menu| image:: images/vlan_menu.png
+.. |img_ethtype_menu| image:: images/ethtype_menu.png
+.. |img_ad3306_menu| image:: images/ad3306_menu.png
+.. |img_reg_read| image:: images/reg_read.png
+.. |img_reg_read_multi| image:: images/reg_read_multi.png
+.. |img_uf2_drive| image:: images/uf2_drive.png
+.. |img_menu_tree| image:: images/menu_tree.svg
