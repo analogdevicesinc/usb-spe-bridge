@@ -13,8 +13,9 @@ The following hardware platforms currently have support.
  - E2B to USB Board
 
 # Documentation
-    - Users Guide
-    - Build Guide
+ - [Users Guide](https://analogdevicesinc.github.io/usb-spe-bridge/usersguide.html)
+ - [Build Guide](https://analogdevicesinc.github.io/usb-spe-bridge/buildguide.html)
+
 ## Contributing
 
 Contributions to this project are welcome and encouraged. See
