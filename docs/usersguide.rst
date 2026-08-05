@@ -290,20 +290,10 @@ mode from bridge mode, hold down the USER button for 3 seconds until D7
 turns blue.  Sniffer mode can be set as the power on default mode via
 the console interface.
 
-.. tip::
-
-   While sniffer mode is limited to only receiving traffic from the T1S bus, the
-   node is still inherently part of the network bus. Caution must be used to
-   ensure there are no conflicts when PLCA is enabled.
-
-   |
-
-   For buses with PLCA enabled, a coordinator (PLCA ID 0) should already be present.
-   Verify the sniffer's ID is unique amongst all other nodes, and not Node ID 0
-   to avoid assuming the PLCA coordinator responsibility.
-   Alternatively, PLCA may be disabled on the sniffer node to avoid any conflicts,
-   regardless of the PLCA usage of the rest of the bus.
-
+When sniffer mode is activated, by either power on default, or the USER button,
+PLCA will automatically be disabled on the AD3306 T1S interface. This prevents any
+conflicts of PLCA IDs when using the tool on existing networks.  When sniffer is
+not activated, the PLCA settings in the configuration will be utilized.
 
 
 Bootloader / USBi Mode
@@ -558,7 +548,8 @@ have no effect if PLCA is disabled.
 
 **PLCA Config Menu - PLCA Enabled**
 
-Enables or disables the PLCA operation of the AD3306.
+Enables or disables the PLCA operation of the AD3306. When in USB sniffer mode,
+this value is ignored, and PLCA is disabled automatically.
 
 **PLCA Config Menu - PLCA TO Timer**
 
