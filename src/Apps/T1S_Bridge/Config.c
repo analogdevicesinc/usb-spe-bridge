@@ -244,7 +244,8 @@ static config_menu_entry_t plcaMenuEntries[] = {
       .helpText = "Usage: plcaen  <on/off>\n"
                   "       plcaen  <0/1>\n"
                   "Selecting this option sets the state of the PLCA feature "
-                  "on the T1S network.",
+                  "on the T1S network.  When in USB sniffer mode, this field is "
+                  "ignored, and PLCA is disabled.",
       .dataType = MENU_ITEM_ON_OFF,
       .data.on_off_t_data = {
           .dataPtr = &storedAppConfig.plcaEnabled
