@@ -21,7 +21,7 @@ static app_config_t systemAppConfig;
 static app_config_t storedAppConfig;
 
 static const app_config_t defaultAppConfig = {
-    .plcaCount = 16,
+    .plcaCount = 18,
     .plcaEnabled = true,
     .plcaId = 0,
     .burstCount = 0,    //0 Frames

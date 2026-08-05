@@ -508,7 +508,7 @@ Restores the configuration to the default settings:
 -  PLCA
 
    -  ID: 0
-   -  Count: 16
+   -  Count: 18
    -  Enabled
    -  TO Timer: 32
    -  Burst Timer: 128
