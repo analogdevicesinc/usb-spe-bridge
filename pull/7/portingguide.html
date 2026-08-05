@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="The intention of this code base is to be relatively portable for different platforms using the SPE devices and the MAX32690 as the host.  There are some assumptions that are made, like sticking with FreeRTOS.  It is probably relatively easy to move to a different MAX32, but not without a little work." name="description" />
+
+    <title>Porting Guide &#8212; MAX32690 Single Pair Ethernet/USB Bridge  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=cae2157c" />
+    <script async="async" src="_static/app.umd.js?v=26d0298f"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Build Guide" href="buildguide.html" />
+   
+  
+  
+  
+  <meta name="repository" content="max32690-usb-spe-bridge">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://developer.analog.com/" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Documentation</label>
+        
+        <a id="logo" href="index.html">
+          <div>MAX32690 Single Pair Ethernet/USB Bridge</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root/>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Porting Guide</a><ul>
+<li><a class="reference internal" href="#required-implementations">Required Implementations</a><ul>
+<li><a class="reference internal" href="#platform-general">Platform (General)</a></li>
+<li><a class="reference internal" href="#platform-ad3306">Platform (AD3306)</a></li>
+<li><a class="reference internal" href="#platform-adin1110">Platform (ADIN1110)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bootloader">Bootloader</a></li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="index.html">
+      MAX32690 Single Pair Ethernet/USB Bridge
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root/>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#hardware-overview">Hardware Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#general-operation">General Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#console-interface-and-configuration">Console Interface and Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide.html#re-programming">Re-Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildguide.html">Build Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Porting Guide</a></li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb empty"><ol></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="porting-guide">
+<h1>Porting Guide<a class="headerlink" href="#porting-guide" title="Link to this heading"></a></h1>
+<p>The intention of this code base is to be relatively portable for different
+platforms using the SPE devices and the MAX32690 as the host.  There are some
+assumptions that are made, like sticking with FreeRTOS.  It is probably
+relatively easy to move to a different MAX32, but not without a little work.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Platforms</span></code> folder intends to hold <em>most</em> of the code needed for a specific
+hardware platform.  PlatformCommon provides utility functions which should be
+specific to all MAX32690s using this project, regardless of board.</p>
+<section id="required-implementations">
+<h2>Required Implementations<a class="headerlink" href="#required-implementations" title="Link to this heading"></a></h2>
+<section id="platform-general">
+<h3>Platform (General)<a class="headerlink" href="#platform-general" title="Link to this heading"></a></h3>
+<p>The platform should create a PlatformSpecs.h file, which at a minimum needs to
+define <code class="docutils literal notranslate"><span class="pre">PLATFORM_NUM_I2CS</span></code>, <code class="docutils literal notranslate"><span class="pre">PLATFORM_NUM_BUTTONS</span></code> and <code class="docutils literal notranslate"><span class="pre">PLATFORM_NUM_LEDS</span></code>.</p>
+<p>Specific assignments of Buttons and LEDS are done with the following. The
+<code class="docutils literal notranslate"><span class="pre">_INVALID</span></code> definitions from Platform.h can be used if the following aren’t on
+the board:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PLATFORM_BOOT_BTN_NUM</span></code> - Button to restart to the bootloader from application</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLATFORM_T1S_ACT_LED_NUM</span></code> - T1S Activity LED</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLATFORM_USB_ACT_LED_NUM</span></code> - USB Activity LED</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLATFORM_STATUS_LED_NUM</span></code> - General status LED</p></li>
+</ul>
+</div></blockquote>
+<p>In addition, a platform C file needs to implement the functions defined in
+<code class="docutils literal notranslate"><span class="pre">Platform.h</span></code> as the applications expect those to be defined.</p>
+</section>
+<section id="platform-ad3306">
+<h3>Platform (AD3306)<a class="headerlink" href="#platform-ad3306" title="Link to this heading"></a></h3>
+<p>For platforms which include an AD3306, the functions defined in <code class="docutils literal notranslate"><span class="pre">AD3306_Platform.h</span></code>
+need to be implemented.</p>
+</section>
+<section id="platform-adin1110">
+<h3>Platform (ADIN1110)<a class="headerlink" href="#platform-adin1110" title="Link to this heading"></a></h3>
+<p>For platforms which include an ADIN1110, the functions defined in
+<code class="docutils literal notranslate"><span class="pre">ADIN1110_Platform.h</span></code> need to be implemented.</p>
+</section>
+</section>
+<section id="bootloader">
+<h2>Bootloader<a class="headerlink" href="#bootloader" title="Link to this heading"></a></h2>
+<p>To add a new platform/board to the bootloader project, modify the board.h file
+located in the /bootloader folder to specify the LED, UART, device names and
+URL used in the mass storage device.</p>
+<p>This assumes the standard double-tap reset functionality is applicable to the
+new hardware. If additional bootloader features are needed, see the TinyUF2
+documentation on the <a class="icon link reference external" href="https://github.com/adafruit/tinyuf2" target="_blank">Github Repo</a>.</p>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="buildguide.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Build Guide</a>
+    <div></div>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
