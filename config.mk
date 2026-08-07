@@ -19,12 +19,14 @@
 # Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
 #              E2BUSB   - E2B to USB Adapter Board
-PLATFORM ?= E2BUSB
+#              ADIN2111 - EVAL-ADIN2111D1Z
+PLATFORM ?= ADIN2111
 
 # Which application to build. This ties directly to the folder names in ./src/Apps
 # Options are: T1S_Bridge - T1S to USB Bridge
+#              T1L_Bridge - T1L to USB Bridge
 #
-APP ?= T1S_Bridge
+APP ?= T1L_Bridge
 
 # This specifies how much flash is allocated to the bootloader (if used)
 # and where the application starts

@@ -50,6 +50,16 @@
 #define UF2_VOLUME_LABEL      "ADIN1140"
 #define UF2_INDEX_URL         "https://www.analog.com/en/products/adin1110.html"
 #define UART_NUM               0
+#elif defined(TINYUF2_ADIN2111)
+#define LED_PORT              MXC_GPIO0
+#define LED_PIN               MXC_GPIO_PIN_14
+#define LED_VDDIO             MXC_GPIO_VSSEL_VDDIO
+#define LED_STATE_ON          0
+#define USB_PRODUCT           "ADIN2111"
+#define UF2_BOARD_ID          "ADIN2111"
+#define UF2_VOLUME_LABEL      "ADIN2111"
+#define UF2_INDEX_URL         "https://www.analog.com/en/products/adin2111.html"
+#define UART_NUM               0
 #else
 #error "Platform not defined, or not supported"
 #endif

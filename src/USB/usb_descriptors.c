@@ -204,9 +204,9 @@ static char const *string_desc_arr[] =
 {
     [STRID_LANGID] = (const char[]){ 0x09, 0x04 },  // supported language is English (0x0409)
     [STRID_MANUFACTURER] = "Analog Devices, Inc",   // Manufacturer
-    [STRID_PRODUCT] = "T1S Adapter",                // Product
+    [STRID_PRODUCT] = "SPE Adapter",                // Product
     [STRID_SERIAL] = NULL,                          // Serials will use unique ID if possible
-    [STRID_INTERFACE] = "T1S Network Interface"     // Interface Description
+    [STRID_INTERFACE] = "SPE Network Interface"     // Interface Description
 
                                                     // STRID_MAC index is handled separately
 };
