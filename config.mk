@@ -18,7 +18,7 @@
 
 # Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-#              E2BUSB   - E2B to USB Adapter Board
+#              E2BUSB   - FlextechAKT E2B to USB Adapter Board
 PLATFORM ?= E2BUSB
 
 # Which application to build. This ties directly to the folder names in ./src/Apps

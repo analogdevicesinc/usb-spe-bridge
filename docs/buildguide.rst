@@ -8,7 +8,7 @@ Clone this repository with its submodules:
 
 .. code:: text
 
-    git clone https://github.com/adi-innersource/max32690-usb-spe-bridge bridge
+    git clone https://github.com/analogdevicesinc/usb-spe-bridge bridge
     cd bridge
     git submodule update --init
 
@@ -35,7 +35,7 @@ Current options are `ADIN1140` and `E2BUSB`.
 
     # Conditional source files depending on the hardware platform
     # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-    #              E2BUSB   - E2B to USB Adapter Board
+    #              E2BUSB   - FlextechAKT E2B to USB Adapter Board
     PLATFORM := E2BUSB
 
 APP
@@ -79,7 +79,7 @@ This project utilizes Analog Devices' Code Fusion Studio (CFS) version 2.1.0.
 1. Open the project folder in VS Code with the CFS extension installed. The
    folder should be the root folder that contains the Makefile.
 2. Select the CodeFusion Studio Plugin window.
-3. In the Actions panel, select `Build (max32690-usb-spe-bridge)`
+3. In the Actions panel, select `Build (usb-spe-bridge)`
 
 Upon completion a summary of the project should be present in the VS Code
 terminal. For example:
@@ -87,18 +87,18 @@ terminal. For example:
 .. code:: text
 
     Memory region         Used Size  Region Size  %age Used
-        ROM:                  0 B       128 KB      0.00%
-        FLASH:            99996 B      3328 KB      2.93%
-        PAL_NVM_DB:           0 B          0 B
-        RISCV_FLASH:          0 B          0 B
-        SRAM:            290904 B         1 MB     27.74%
-        MAILBOX_0:            0 B          0 B
-        MAILBOX_1:            0 B          0 B
-        HPB_CS0:              0 B       256 MB      0.00%
-        HPB_CS1:              0 B       256 MB      0.00%
-    arm-none-eabi-size --format=berkeley /d/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
-    text    data     bss     dec     hex filename
-    97956    2040  288856  388852   5eef4 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
+                ROM:           0 B       128 KB      0.00%
+              FLASH:      121548 B      3040 KB      3.90%
+               SRAM:      366168 B    1048572 B     34.92%
+            HPB_CS0:           0 B       256 MB      0.00%
+            HPB_CS1:           0 B       256 MB      0.00%
+    Creating build/usb-spe-bridge.hex
+    python ./libs/uf2/utils/uf2conv.py -f MAX32690 -c -o ./build/usb-spe-bridge.uf2 ./build/usb-spe-bridge.hex
+    Converted to uf2, output size: 243200, start address: 0x10008000
+    Wrote 243200 bytes to ./build/usb-spe-bridge.uf2
+    arm-none-eabi-size --format=berkeley ./build/usb-spe-bridge.elf
+       text    data     bss     dec     hex filename
+     118164    3384  362584  484132   76324 ./build/usb-spe-bridge.elf
 
 Flashing
 ~~~~~~~~
@@ -111,8 +111,8 @@ Flashing
 1. Select the CodeFusion Studio Plugin window.
 2. In the Actions panel, select
 
-    - For MAX PICO/OpenOCD Debuggers ``Flash (OpenOCD) (max32690-usb-spe-bridge)``
-    - For Segger JLink Debuggers ``Flash (JLink) (max32690-usb-spe-bridge)``
+    - For MAX PICO/OpenOCD Debuggers ``Flash (OpenOCD) (usb-spe-bridge)``
+    - For Segger JLink Debuggers ``Flash (JLink) (usb-spe-bridge)``
 
 
 The terminal window will indicate the flashing operation. Below is a typical
@@ -168,22 +168,23 @@ as above. This allows for build-flash-run of both the bootloader and application
 from the same VS Code window.
 
 1. Select the CodeFusion Studio Plugin window.
-2. In the Actions panel, select `CFS: Bootloader Build (max32690-usb-spe-bridge)`
+2. In the Actions panel, select `CFS: Bootloader Build (usb-spe-bridge)`
 
 Upon completion a summary of the project should be present in the VS Code
 terminal. For example:
 
 .. code:: text
 
-    Memory region     Used Size  Region Size  %age Used
-        ROM:               0 B       128 KB      0.00%
-        FLASH:         25436 B        32 KB     77.62%
-        SRAM:          26424 B    1048572 B      2.52%
-        HPB_CS0:           0 B       256 MB      0.00%
-        HPB_CS1:           0 B       256 MB      0.00%
-    arm-none-eabi-size --format=berkeley D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
-    text    data     bss     dec     hex filename
-    25436       0   24008   49444    c124 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
+    Memory region         Used Size  Region Size  %age Used
+                ROM:           0 B       128 KB      0.00%
+              FLASH:       25496 B        32 KB     77.81%
+               SRAM:       26464 B    1048572 B      2.52%
+            HPB_CS0:           0 B       256 MB      0.00%
+            HPB_CS1:           0 B       256 MB      0.00%
+    Creating build/bootloader.hex
+    arm-none-eabi-size --format=berkeley ./build/bootloader.elf
+      text    data     bss     dec     hex filename
+     25496       0   24008   49504    c160 ./build/bootloader.elf
 
 Flashing
 ~~~~~~~~
@@ -196,8 +197,8 @@ Flashing
 1. Select the CodeFusion Studio Plugin window.
 2. In the Actions panel, select
 
-    - For MAX PICO/OpenOCD Debuggers ``CFS: Bootloader Flash (OpenOCD) (max32690-usb-spe-bridge)``
-    - For Segger JLink Debuggers ``CFS: Bootloader Flash (JLink) (max32690-usb-spe-bridge)``
+    - For MAX PICO/OpenOCD Debuggers ``CFS: Bootloader Flash (OpenOCD) (usb-spe-bridge)``
+    - For Segger JLink Debuggers ``CFS: Bootloader Flash (JLink) (usb-spe-bridge)``
 
 The terminal window will indicate the flashing operation. Below is a typical
 output for OpenOCD/PICO based flashing.  JLink output will differ from this.
