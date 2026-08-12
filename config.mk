@@ -18,7 +18,7 @@
 
 # Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-#              T1SUSB   - T1S to USB Adapter Board
+#              T1SUSB   - FlextechAKT T1S to USB Adapter Board
 PLATFORM ?= T1SUSB
 
 # Which application to build. This ties directly to the folder names in ./src/Apps
