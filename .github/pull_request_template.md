@@ -4,7 +4,7 @@ A PR should reference a single feature or bug fix, or tightly related issues. Wh
 code changes on separate commits and PRs.
 
 ### Test Methodology
-Please describe the test methods used to verify these changes.  See [CONTRIBUTING.md](https://github.com/adi-innersource/max32690-usb-spe-bridge/blob/main/doc/CONTRIBUTING.md)
+Please describe the test methods used to verify these changes.  See [CONTRIBUTING.md](https://github.com/analogdevicesinc/usb-spe-bridge/blob/main/CONTRIBUTING.md)
 for recommendations on different test strategies.
 
 ### Resolved Issues

@@ -16,6 +16,10 @@ include:
 -  Wireshark and EdgeStudio support (via networking)
 -  EdgeStudio support (via USBi)
 
+While the functionality of the USB to T1S bridge software is common across supported
+platforms, this User's Guide targets the hardware features of the `FlextechAKT
+E2BUSB Development Board <https://flextechakt.com/products/adi-usb-to-e2b-10baset1s-development-board>`__
+
 Getting Started
 ===============
 

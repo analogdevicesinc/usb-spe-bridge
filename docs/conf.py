@@ -1,7 +1,7 @@
 from os import path
 
 # -- Project information -----------------------------------------------------
-repository = 'max32690-usb-spe-bridge'
+repository = 'usb-spe-bridge'
 project = 'MAX32690 Single Pair Ethernet/USB Bridge'
 copyright = '2026, Analog Devices, Inc.'
 author = 'Analog Devices, Inc.'
