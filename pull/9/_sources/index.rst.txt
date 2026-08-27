@@ -10,7 +10,7 @@ MAX32690 Single Pair Ethernet/USB Bridge
 
 **For Users**
 
-- :doc:`usersguide` - Operation instructions for the E2BUSB hardware running the SPE bridge software.
+- :doc:`usersguide` - Operation instructions for the FlextechAKT E2BUSB hardware running the SPE bridge software.
 
 **For Developers**
 
