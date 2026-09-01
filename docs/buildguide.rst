@@ -29,14 +29,14 @@ PLATFORM
 ~~~~~~~~
 
 Specifies the Platform the project should be built for.
-Current options are `ADIN1140` and `E2BUSB`.
+Current options are `ADIN1140` and `T1SUSB`.
 
 .. code:: text
 
     # Conditional source files depending on the hardware platform
     # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-    #              E2BUSB   - E2B to USB Adapter Board
-    PLATFORM := E2BUSB
+    #              T1SUSB   - T1S to USB Adapter Board
+    PLATFORM := T1SUSB
 
 APP
 ~~~
