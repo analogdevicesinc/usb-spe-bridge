@@ -82,7 +82,7 @@ Network Configuration
 The NCM network device will appear as any standard networking adapter
 for your host computer, and can be configured the same as any other
 connection.  For use as a general network monitor (sniffer) or L2
-networking only (e.g. E2B), configuring an IP address is not necessary.
+networking only (e.g. 10Base-T1S), configuring an IP address is not necessary.
 However, for TCP/IP networking, it is recommended to set a compatible IP
 address for your network.  The process for configuring an IP address is
 not specific to this device, however here are some helpful links:
