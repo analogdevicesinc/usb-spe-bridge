@@ -8,8 +8,8 @@
 
     <title>Build Guide &#8212; MAX32690 Single Pair Ethernet/USB Bridge  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=d3f78147" />
-    <script async="async" src="_static/app.umd.js?v=26d0298f"></script>
+    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=fb8972a4" />
+    <script async="async" src="_static/app.umd.js?v=8c78863f"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Porting Guide" href="portingguide.html" />
@@ -65,10 +65,10 @@
     </div>
     <div id="right">
       <span>
-        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <a id="logo-org" href="https://developer.analog.com/" aria-label="Analog Devices Inc. landing page"></a>
         <div class="vertical-divider"></div>
         
-        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Documentation</label>
         
         <a id="logo" href="index.html">
           <div>MAX32690 Single Pair Ethernet/USB Bridge</div>
@@ -187,11 +187,11 @@ project.</div>
 <section id="platform">
 <h3>PLATFORM<a class="headerlink" href="#platform" title="Link to this heading"></a></h3>
 <p>Specifies the Platform the project should be built for.
-Current options are <cite>ADIN1140</cite> and <cite>E2BUSB</cite>.</p>
+Current options are <cite>ADIN1140</cite> and <cite>T1SUSB</cite>.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-#              E2BUSB   - E2B to USB Adapter Board
-PLATFORM := E2BUSB
+#              T1SUSB   - T1S to USB Adapter Board
+PLATFORM := T1SUSB
 </pre></div>
 </div>
 </section>
@@ -270,7 +270,7 @@ hardware and the hardware is powered on.</p>
 </ol>
 <p>The terminal window will indicate the flashing operation. Below is a typical
 output for OpenOCD/PICO based flashing.  JLink output will differ from this.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to &quot;armv7e-m&quot;.
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to "armv7e-m".
 `Open On-Chip Debugger (Analog Devices 0.12.0-1.2.0)  OpenOCD 0.12.0 (2025-04-03-09:08)
 Licensed under GNU GPL v2
 Report bugs to &lt;processor.tools.support@analog.com&gt;
@@ -352,7 +352,7 @@ hardware and the hardware is powered on.</p>
 </ol>
 <p>The terminal window will indicate the flashing operation. Below is a typical
 output for OpenOCD/PICO based flashing.  JLink output will differ from this.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to &quot;armv7e-m&quot;.
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The target architecture is set to "armv7e-m".
 Open On-Chip Debugger (Analog Devices 0.12.0-1.2.0)  OpenOCD 0.12.0 (2025-04-03-09:08)
 Licensed under GNU GPL v2
 Report bugs to &lt;processor.tools.support@analog.com&gt;
