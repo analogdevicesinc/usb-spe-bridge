@@ -21,7 +21,7 @@ static app_config_t systemAppConfig;
 static app_config_t storedAppConfig;
 
 static const app_config_t defaultAppConfig = {
-    .plcaCount = 16,
+    .plcaCount = 18,
     .plcaEnabled = true,
     .plcaId = 0,
     .burstCount = 0,    //0 Frames
@@ -244,7 +244,8 @@ static config_menu_entry_t plcaMenuEntries[] = {
       .helpText = "Usage: plcaen  <on/off>\n"
                   "       plcaen  <0/1>\n"
                   "Selecting this option sets the state of the PLCA feature "
-                  "on the T1S network.",
+                  "on the T1S network.  When in USB sniffer mode, this field is "
+                  "ignored, and PLCA is disabled.",
       .dataType = MENU_ITEM_ON_OFF,
       .data.on_off_t_data = {
           .dataPtr = &storedAppConfig.plcaEnabled

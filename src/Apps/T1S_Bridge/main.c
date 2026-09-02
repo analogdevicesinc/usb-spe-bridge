@@ -82,10 +82,15 @@ static net_iface_mode_t ifaceModes[IFACE_COUNT];
 static app_config_t runtimeAppConfig;
 static TaskHandle_t backgroundTask;
 
+//This flag is set when the USB mode is configured (including runtime) to force
+//PLCA off when just sniffing the network
+static bool plcaForcedOff;
+
 static void BackgroundTaskBody(void *pvParameters);
 static void PktHandler(net_iface_t iface, net_pkt_t *pkt);
 static void BackgroundLoop(void);
 static void ConfigureUSB_Mode(bool sniffer);
+static void ConfigurePLCA(void);
 
 //These flags are for the activity LEDs. Set by the packet handler and cleared
 //by the background task. It didn't make much sense to use a RTOS mechanism or
@@ -217,11 +222,28 @@ static void ConfigureUSB_Mode(bool sniffer)
         ifaceModes[IFACE_USB] = IFACE_MODE_RXONLY;
         PlatformSetLED(PLATFORM_STATUS1_LED_NUM, false);
         PlatformSetLED(PLATFORM_STATUS2_LED_NUM, true);
+
+        //When in sniffer mode, force PLCA off to prevent accidental collisions
+        //on the bus is the sniffer isn't configured with the correct Node ID
+        plcaForcedOff = true;
     } else {
         ifaceModes[IFACE_USB] = IFACE_MODE_TXRX;
         PlatformSetLED(PLATFORM_STATUS2_LED_NUM, false);
         PlatformSetLED(PLATFORM_STATUS1_LED_NUM, true);
+
+        //When not in sniffer, use the configuration's PLCA settings
+        plcaForcedOff = false;
     }
+
+    //Adjust the PLCA on sniffer mode change
+    ConfigurePLCA();
+}
+
+void ConfigurePLCA( )
+{
+    AD3306_SetPLCA(runtimeAppConfig.plcaEnabled && !plcaForcedOff, runtimeAppConfig.plcaId, runtimeAppConfig.plcaCount);
+    AD3306_SetPLCA_TO(runtimeAppConfig.plcaTO);
+    AD3306_SetBurstMode(runtimeAppConfig.burstCount, runtimeAppConfig.burstTimer);
 }
 
 void BackgroundTaskBody(void *pvParameters)
@@ -244,19 +266,18 @@ void BackgroundTaskBody(void *pvParameters)
 
     //T1S is always Tx/Rx
     ifaceModes[IFACE_T1S] = IFACE_MODE_TXRX;
-    ConfigureUSB_Mode(runtimeAppConfig.usbSniffer);
-
 
     if (ifaceModes[IFACE_T1S] != IFACE_MODE_OFF) {
         AD3306_Init(AD3306_Handler);
-        AD3306_SetPLCA(runtimeAppConfig.plcaEnabled, runtimeAppConfig.plcaId, runtimeAppConfig.plcaCount);
-        AD3306_SetPLCA_TO(runtimeAppConfig.plcaTO);
-        AD3306_SetBurstMode(runtimeAppConfig.burstCount, runtimeAppConfig.burstTimer);
         AD3306_SetVLAN_Filter(runtimeAppConfig.vlanEnabled, runtimeAppConfig.vlanBlock,
                               runtimeAppConfig.vlanEntry1, runtimeAppConfig.vlanEntry2);
         AD3306_SetETHTYPE_Filter(runtimeAppConfig.etypeEnabled, runtimeAppConfig.etypeBlock,
                                  runtimeAppConfig.etypeEntry1, runtimeAppConfig.etypeEntry2);
     }
+
+    //The USB mode must be configured AFTER the AD3306 is initialized as it also
+    //sets up the PLCA based on sniffer mode or not.
+    ConfigureUSB_Mode(runtimeAppConfig.usbSniffer);
 
     if (ifaceModes[IFACE_USB] != IFACE_MODE_OFF) {
         netCfg.handler = USB_NetworkHandler;
@@ -294,9 +315,13 @@ void AppInfoCLI_Callback(void *unused)
              runtimeAppConfig.macAddr[4], runtimeAppConfig.macAddr[5]);
     ConfigMenuWriteLine(infoString, 1, false);
 
-    snprintf(infoString, INFO_STR_LEN, "PLCA: %s, ID: %d, Count: %d",
-             runtimeAppConfig.plcaEnabled ? "Enabled" : "Disabled",
-             runtimeAppConfig.plcaId, runtimeAppConfig.plcaCount);
+    if (plcaForcedOff) {
+        snprintf(infoString, INFO_STR_LEN, "PLCA: Disabled for USB Sniffer");
+    } else {
+        snprintf(infoString, INFO_STR_LEN, "PLCA: %s, ID: %d, Count: %d",
+                 runtimeAppConfig.plcaEnabled ? "Enabled" : "Disabled",
+                 runtimeAppConfig.plcaId, runtimeAppConfig.plcaCount);
+    }
     ConfigMenuWriteLine(infoString, 1, false);
 
     for (iface = 0; iface < IFACE_COUNT; iface++) {
