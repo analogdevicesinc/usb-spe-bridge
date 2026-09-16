@@ -36,6 +36,5 @@ TINY_USB_SRC = \
 	$(TINY_USB_ROOT)/src/class/cdc/cdc_host.c \
 	$(TINY_USB_ROOT)/src/class/hid/hid_host.c \
 	$(TINY_USB_ROOT)/src/class/msc/msc_host.c \
-	$(TINY_USB_ROOT)/src/class/vendor/vendor_host.c \
 	$(TINY_USB_ROOT)/src/portable/mentor/musb/dcd_musb.c \
 	$(TINY_USB_ROOT)/hw/bsp/board.c
