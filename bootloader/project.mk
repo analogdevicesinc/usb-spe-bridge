@@ -18,7 +18,7 @@
 
 
 # This makefile is dependent on 2 variables being passed in at build time:
-# PLATFORM - This can be either E2BUSB or ADIN1140
+# PLATFORM - This can be either T1SUSB or ADIN1140
 # FLASH_BOOT_SIZE - This is the size (in bytes) of the flash area, and
 #                   subsequently defines the start of application code. This
 #                   must be coordinated between the application and bootloader

@@ -84,9 +84,9 @@ ifeq ($(PLATFORM),ADIN1140)
 VPATH += $(SRC_PATH)/Platforms/ADIN1140
 IPATH += $(SRC_PATH)/Platforms/ADIN1140
 USE_FLASH_CONFIG := 1
-else ifeq ($(PLATFORM), E2BUSB)
-VPATH += $(SRC_PATH)/Platforms/E2BUSB
-IPATH += $(SRC_PATH)/Platforms/E2BUSB
+else ifeq ($(PLATFORM), T1SUSB)
+VPATH += $(SRC_PATH)/Platforms/T1SUSB
+IPATH += $(SRC_PATH)/Platforms/T1SUSB
 HAS_ADIN1110 := 0
 #Fix for I2C pin outs on this device. See i2c_me18.c for notes on this...
 PROJ_CFLAGS += -DMAX32690GTK_PACKAGE_TQFN

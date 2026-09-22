@@ -15,7 +15,7 @@
  */
 
 /**
- * Number of neopixels. The E2BUSB board has a neopixel, but the control for it
+ * Number of neopixels. The T1SUSB board has a neopixel, but the control for it
  * isn't implemented (yet) in the TinyUF2 port. Just set the count to 0 for
  * all boards
  */
@@ -30,14 +30,14 @@
 #define USB_PID           0xA010    //MAX32 TinyUF2
 #define USB_MANUFACTURER  "Analog Devices"
 
-#if defined(TINYUF2_E2BUSB)
+#if defined(TINYUF2_T1SUSB)
 #define LED_PORT              MXC_GPIO1
 #define LED_PIN               MXC_GPIO_PIN_12
 #define LED_VDDIO             MXC_GPIO_VSSEL_VDDIOH
 #define LED_STATE_ON          0
-#define USB_PRODUCT           "E2BUSB"
-#define UF2_BOARD_ID          "E2BUSB"
-#define UF2_VOLUME_LABEL      "E2BUSB"
+#define USB_PRODUCT           "T1SUSB"
+#define UF2_BOARD_ID          "T1SUSB"
+#define UF2_VOLUME_LABEL      "T1SUSB"
 #define UF2_INDEX_URL         "https://www.analog.com/en/products/ad3306.html"
 #define UART_NUM              0
 #elif defined(TINYUF2_ADIN1140)

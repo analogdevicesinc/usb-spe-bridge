@@ -18,7 +18,7 @@
 
 # Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-#              E2BUSB   - E2B to USB Adapter Board
+#              T1SUSB   - T1S to USB Adapter Board
 #              ADIN2111 - EVAL-ADIN2111D1Z
 PLATFORM ?= ADIN2111
 

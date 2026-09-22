@@ -42,7 +42,7 @@ own hardware implementation code to provide a level of abstraction for the app.
 
 The following hardware platforms currently have support.
  - EVAL-ADIN1140D1Z
- - E2B to USB Board
+ - T1S to USB Board
  - EVAL-ADIN2111EBZ
 
 # Documentation
