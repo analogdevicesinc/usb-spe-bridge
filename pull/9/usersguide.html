@@ -9,7 +9,7 @@
     <title>User’s Guide &#8212; MAX32690 Single Pair Ethernet/USB Bridge  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
     <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=fb8972a4" />
-    <script async="async" src="_static/app.umd.js?v=26d0298f"></script>
+    <script async="async" src="_static/app.umd.js?v=8c78863f"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Build Guide" href="buildguide.html" />
@@ -241,7 +241,7 @@ not yet been tested on MacOS systems.</p>
 <p>The NCM network device will appear as any standard networking adapter
 for your host computer, and can be configured the same as any other
 connection.  For use as a general network monitor (sniffer) or L2
-networking only (e.g. E2B), configuring an IP address is not necessary.
+networking only (e.g. 10Base-T1S), configuring an IP address is not necessary.
 However, for TCP/IP networking, it is recommended to set a compatible IP
 address for your network.  The process for configuring an IP address is
 not specific to this device, however here are some helpful links:</p>
@@ -417,20 +417,10 @@ using Wireshark to get a clear visual of the actual T1S bus.</p>
 mode from bridge mode, hold down the USER button for 3 seconds until D7
 turns blue.  Sniffer mode can be set as the power on default mode via
 the console interface.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>While sniffer mode is limited to only receiving traffic from the T1S bus, the
-node is still inherently part of the network bus. Caution must be used to
-ensure there are no conflicts when PLCA is enabled.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>For buses with PLCA enabled, a coordinator (PLCA ID 0) should already be present.
-Verify the sniffer’s ID is unique amongst all other nodes, and not Node ID 0
-to avoid assuming the PLCA coordinator responsibility.
-Alternatively, PLCA may be disabled on the sniffer node to avoid any conflicts,
-regardless of the PLCA usage of the rest of the bus.</p>
-</div>
+<p>When sniffer mode is activated, by either power on default, or the USER button,
+PLCA will automatically be disabled on the AD3306 T1S interface. This prevents any
+conflicts of PLCA IDs when using the tool on existing networks.  When sniffer is
+not activated, the PLCA settings in the configuration will be utilized.</p>
 </section>
 <section id="bootloader-usbi-mode">
 <h2>Bootloader / USBi Mode<a class="headerlink" href="#bootloader-usbi-mode" title="Link to this heading"></a></h2>
@@ -600,7 +590,7 @@ section for information on runtime configuration.</p>
 <li><p>PLCA</p>
 <ul>
 <li><p>ID: 0</p></li>
-<li><p>Count: 16</p></li>
+<li><p>Count: 18</p></li>
 <li><p>Enabled</p></li>
 <li><p>TO Timer: 32</p></li>
 <li><p>Burst Timer: 128</p></li>
@@ -643,7 +633,8 @@ effect if PLCA is disabled.</p>
 <p>Configures the number of PLCA nodes on the T1S network. This option will
 have no effect if PLCA is disabled.</p>
 <p><strong>PLCA Config Menu - PLCA Enabled</strong></p>
-<p>Enables or disables the PLCA operation of the AD3306.</p>
+<p>Enables or disables the PLCA operation of the AD3306. When in USB sniffer mode,
+this value is ignored, and PLCA is disabled automatically.</p>
 <p><strong>PLCA Config Menu - PLCA TO Timer</strong></p>
 <p>Configures the transmit opportunity value for the PLCA, setting the
 minimum duration of the PLCA transmission. Value is in units of Tbits.</p>
