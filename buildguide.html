@@ -8,8 +8,8 @@
 
     <title>Build Guide &#8212; MAX32690 Single Pair Ethernet/USB Bridge  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=fb8972a4" />
-    <script async="async" src="_static/app.umd.js?v=8c78863f"></script>
+    <link rel="stylesheet" type="text/css" href="_static/app.min.css?v=b1d7a81a" />
+    <script async="async" src="_static/app.umd.js?v=daa30c51"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Porting Guide" href="portingguide.html" />
@@ -18,7 +18,7 @@
   
   
   
-  <meta name="repository" content="max32690-usb-spe-bridge">
+  <meta name="repository" content="usb-spe-bridge">
   <meta name="version" content="">
   
     <meta name="page_source_suffix" content=".rst">
@@ -167,7 +167,7 @@ Content on this topic
 <section id="cloning">
 <h2>Cloning<a class="headerlink" href="#cloning" title="Link to this heading"></a></h2>
 <p>Clone this repository with its submodules:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/adi-innersource/max32690-usb-spe-bridge bridge
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/analogdevicesinc/usb-spe-bridge bridge
 cd bridge
 git submodule update --init
 </pre></div>
@@ -190,7 +190,7 @@ project.</div>
 Current options are <cite>ADIN1140</cite> and <cite>T1SUSB</cite>.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Conditional source files depending on the hardware platform
 # Options are: ADIN1140 - EVAL-ADIN1140D1Z
-#              T1SUSB   - T1S to USB Adapter Board
+#              T1SUSB   - FlextechAKT T1S to USB Adapter Board
 PLATFORM := T1SUSB
 </pre></div>
 </div>
@@ -231,23 +231,23 @@ not in your PATH, this can be adjusted.</p>
 <li><p>Open the project folder in VS Code with the CFS extension installed. The
 folder should be the root folder that contains the Makefile.</p></li>
 <li><p>Select the CodeFusion Studio Plugin window.</p></li>
-<li><p>In the Actions panel, select <cite>Build (max32690-usb-spe-bridge)</cite></p></li>
+<li><p>In the Actions panel, select <cite>Build (usb-spe-bridge)</cite></p></li>
 </ol>
 <p>Upon completion a summary of the project should be present in the VS Code
 terminal. For example:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Memory region         Used Size  Region Size  %age Used
-    ROM:                  0 B       128 KB      0.00%
-    FLASH:            99996 B      3328 KB      2.93%
-    PAL_NVM_DB:           0 B          0 B
-    RISCV_FLASH:          0 B          0 B
-    SRAM:            290904 B         1 MB     27.74%
-    MAILBOX_0:            0 B          0 B
-    MAILBOX_1:            0 B          0 B
-    HPB_CS0:              0 B       256 MB      0.00%
-    HPB_CS1:              0 B       256 MB      0.00%
-arm-none-eabi-size --format=berkeley /d/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
-text    data     bss     dec     hex filename
-97956    2040  288856  388852   5eef4 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/build/max32690-usb-spe-bridge.elf
+            ROM:           0 B       128 KB      0.00%
+          FLASH:      121548 B      3040 KB      3.90%
+           SRAM:      366168 B    1048572 B     34.92%
+        HPB_CS0:           0 B       256 MB      0.00%
+        HPB_CS1:           0 B       256 MB      0.00%
+Creating build/usb-spe-bridge.hex
+python ./libs/uf2/utils/uf2conv.py -f MAX32690 -c -o ./build/usb-spe-bridge.uf2 ./build/usb-spe-bridge.hex
+Converted to uf2, output size: 243200, start address: 0x10008000
+Wrote 243200 bytes to ./build/usb-spe-bridge.uf2
+arm-none-eabi-size --format=berkeley ./build/usb-spe-bridge.elf
+   text    data     bss     dec     hex filename
+ 118164    3384  362584  484132   76324 ./build/usb-spe-bridge.elf
 </pre></div>
 </div>
 <section id="flashing">
@@ -262,8 +262,8 @@ hardware and the hardware is powered on.</p>
 <li><p>In the Actions panel, select</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
-<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(usb-spe-bridge)</span></code></p></li>
+<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(usb-spe-bridge)</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -317,19 +317,20 @@ as above. This allows for build-flash-run of both the bootloader and application
 from the same VS Code window.</p>
 <ol class="arabic simple">
 <li><p>Select the CodeFusion Studio Plugin window.</p></li>
-<li><p>In the Actions panel, select <cite>CFS: Bootloader Build (max32690-usb-spe-bridge)</cite></p></li>
+<li><p>In the Actions panel, select <cite>CFS: Bootloader Build (usb-spe-bridge)</cite></p></li>
 </ol>
 <p>Upon completion a summary of the project should be present in the VS Code
 terminal. For example:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Memory region     Used Size  Region Size  %age Used
-    ROM:               0 B       128 KB      0.00%
-    FLASH:         25436 B        32 KB     77.62%
-    SRAM:          26424 B    1048572 B      2.52%
-    HPB_CS0:           0 B       256 MB      0.00%
-    HPB_CS1:           0 B       256 MB      0.00%
-arm-none-eabi-size --format=berkeley D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
-text    data     bss     dec     hex filename
-25436       0   24008   49444    c124 D:/T1S/ADIN1140_Bridge/max32690-usb-spe-bridge/bootloader/build/bootloader.elf
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Memory region         Used Size  Region Size  %age Used
+            ROM:           0 B       128 KB      0.00%
+          FLASH:       25496 B        32 KB     77.81%
+           SRAM:       26464 B    1048572 B      2.52%
+        HPB_CS0:           0 B       256 MB      0.00%
+        HPB_CS1:           0 B       256 MB      0.00%
+Creating build/bootloader.hex
+arm-none-eabi-size --format=berkeley ./build/bootloader.elf
+  text    data     bss     dec     hex filename
+ 25496       0   24008   49504    c160 ./build/bootloader.elf
 </pre></div>
 </div>
 <section id="id1">
@@ -344,8 +345,8 @@ hardware and the hardware is powered on.</p>
 <li><p>In the Actions panel, select</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
-<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(max32690-usb-spe-bridge)</span></code></p></li>
+<li><p>For MAX PICO/OpenOCD Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(OpenOCD)</span> <span class="pre">(usb-spe-bridge)</span></code></p></li>
+<li><p>For Segger JLink Debuggers <code class="docutils literal notranslate"><span class="pre">CFS:</span> <span class="pre">Bootloader</span> <span class="pre">Flash</span> <span class="pre">(JLink)</span> <span class="pre">(usb-spe-bridge)</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
